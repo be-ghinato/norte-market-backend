@@ -1,0 +1,7 @@
+# Ignora pastas geradas pelo Node.js
+node_modules/
+package-lock.json
+
+# Ignora arquivos de ambiente
+.env
+.env.local
