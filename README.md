@@ -3,9 +3,8 @@
 Projeto integrador da disciplina Programação III - AV1 2026/2.
 
 ## Integrantes do Grupo
-- Nome do Integrante 1
-- Nome do Integrante 2
-- Nome do Integrante 3
+- Bernardo Ghinato Goelzer
+- Bruna Muraro
 
 ## Endpoints
 
@@ -35,9 +34,3 @@ Projeto integrador da disciplina Programação III - AV1 2026/2.
 - `GET  /api/products` - Lista todos os produtos
 - `GET  /api/products/:id` - Retorna um produto pelo ID
 - `POST /api/products` - Cria um novo produto
-
-## Versionamento
-
-- Repositório PÚBLICO no GitHub
-- Cada integrante do grupo deve fazer pelo menos 1 commit com a própria conta do GitHub (nome e e-mail configurados no `git config`)
-- O nome de cada integrante deve aparecer no histórico de commits do repositório
