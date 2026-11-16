@@ -1,49 +1,51 @@
+require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
+const { initSchema, useFileStore } = require('./src/config/db');
+
+const authRoutes = require('./src/routes/authRoutes');
+const productRoutes = require('./src/routes/productRoutes');
+const orderRoutes = require('./src/routes/orderRoutes');
+const userRoutes = require('./src/routes/userRoutes');
+
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
-// Dados em memória (serão substituídos pelo banco de dados depois)
-const products = [
-  { id: 1, name: 'Notebook', price: 3500, category: 'Electronics' },
-  { id: 2, name: 'Mouse', price: 50, category: 'Electronics' },
-  { id: 3, name: 'Teclado', price: 100, category: 'Electronics' }
-];
-
-// 1) Rota GET - listar todos os produtos
-app.get('/api/products', (req, res) => {
-  res.status(200).json(products);
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', store: useFileStore ? 'arquivo' : 'postgresql' });
 });
 
-// 2) Rota GET - produto por id
-app.get('/api/products/:id', (req, res) => {
-  const product = products.find(p => p.id === parseInt(req.params.id));
-  if (!product) return res.status(404).json({ message: 'Produto não encontrado' });
-  res.status(200).json(product);
-});
+// Rotas
+app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/users', userRoutes);
 
-// 3) Rota POST - criar novo produto
-app.post('/api/products', (req, res) => {
-  const { name, price, category } = req.body;
-  if (!name || !price) return res.status(400).json({ message: 'Dados incompletos' });
-  const newProduct = {
-    id: products.length > 0 ? products[products.length - 1].id + 1 : 1,
-    name,
-    price,
-    category
-  };
-  products.push(newProduct);
-  res.status(201).json(newProduct);
-});
-
-// 4) Rota GET - raiz (opcional, para confirmação)
+// Rota raiz
 app.get('/', (req, res) => {
   res.json({ message: 'API do Norte Market está rodando!' });
 });
 
-// Porta do servidor
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+// 404
+app.use((req, res) => {
+  res.status(404).json({ message: 'Rota não encontrada' });
+});
+
+// Tratamento global de erros
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ message: 'Erro interno do servidor' });
+});
+
+const PORT = process.env.PORT || 3000;
+
+initSchema().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+  });
 });
 
 module.exports = app;

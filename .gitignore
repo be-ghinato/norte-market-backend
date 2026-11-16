@@ -5,3 +5,7 @@ package-lock.json
 # Ignora arquivos de ambiente
 .env
 .env.local
+
+# Ignora logs gerados em testes locais
+server.out.log
+server.err.log
