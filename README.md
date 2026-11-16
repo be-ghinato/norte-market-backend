@@ -153,6 +153,21 @@ O arquivo `Norte-Market.postman_collection.json` contém todos os endpoints. Imp
 
 O serviço de banco recomendado no Render é o **PostgreSQL**. Caso não configure `DATABASE_URL`, a API usa armazenamento local em arquivo (funciona para demonstração, mas não persiste entre reinícios no Render).
 
+## API em Producao (Render)
+
+A API esta hospedada no Render e disponivel em:
+
+**https://norte-market-backend.onrender.com**
+
+Endpoints publicos para teste:
+- `GET https://norte-market-backend.onrender.com/health`
+- `GET https://norte-market-backend.onrender.com/api/products`
+- `POST https://norte-market-backend.onrender.com/api/auth/login`
+
+Credenciais de demonstracao (criadas pelo seed):
+- Admin: `admin@nortemarket.com` / `admin123`
+- Cliente: `cliente@nortemarket.com` / `cliente123`
+
 ## Scripts
 - `npm start` — inicia o servidor
 - `npm run seed` — popula o banco com dados reais (usuários + produtos)

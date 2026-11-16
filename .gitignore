@@ -9,3 +9,6 @@ package-lock.json
 # Ignora logs gerados em testes locais
 server.out.log
 server.err.log
+
+# Ignora banco local gerado (producao usa PostgreSQL no Render)
+data/
