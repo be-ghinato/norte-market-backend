@@ -26,7 +26,7 @@ function writeFileStore(data) {
 if (process.env.DATABASE_URL) {
   pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
+    ssl: { rejectUnauthorized: false }
   });
   pool.on('error', (err) => {
     console.error('Erro inesperado no cliente do banco', err);
