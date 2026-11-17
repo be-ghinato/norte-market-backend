@@ -10,12 +10,30 @@ const userRoutes = require('./src/routes/userRoutes');
 
 const app = express();
 
-app.use(cors());
+// CORS configurado para Render + Vercel
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:5173', 'http://localhost:3000'];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like curl, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow in development; restrict in production
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', store: useFileStore ? 'arquivo' : 'postgresql' });
+// Health check - must be defined BEFORE routes
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', database: useFileStore ? 'json-file' : 'postgresql' });
 });
 
 // Rotas
@@ -46,6 +64,9 @@ initSchema().then(() => {
   app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
   });
+}).catch((err) => {
+  console.error('Erro ao iniciar servidor:', err);
+  process.exit(1);
 });
 
 module.exports = app;
