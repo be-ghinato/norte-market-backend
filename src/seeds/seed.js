@@ -1,23 +1,22 @@
 const User = require('../models/User');
 const Product = require('../models/Product');
 
-const ADMIN_EMAIL = 'admin@nortemarket.com';
+const ADMIN_EMAIL = 'admin@norte-market.com';
 const ADMIN_PASSWORD = 'admin123';
 const CUSTOMER_EMAIL = 'cliente@nortemarket.com';
 const CUSTOMER_PASSWORD = 'cliente123';
 
-const PRODUCTS = [
-  { name: 'Notebook Gamer', price: 4599.90, category: 'Eletrônicos', stock: 12 },
-  { name: 'Mouse Sem Fio', price: 89.90, category: 'Eletrônicos', stock: 50 },
-  { name: 'Teclado Mecânico', price: 249.90, category: 'Eletrônicos', stock: 25 },
-  { name: 'Monitor 27" 4K', price: 1499.00, category: 'Eletrônicos', stock: 8 },
-  { name: 'Cadeira Gamer', price: 899.90, category: 'Móveis', stock: 15 },
-  { name: 'Mesa de Escritório', price: 549.00, category: 'Móveis', stock: 10 },
-  { name: 'Fone de Ouvido', price: 199.90, category: 'Eletrônicos', stock: 30 },
-  { name: 'Webcam Full HD', price: 349.90, category: 'Eletrônicos', stock: 18 }
+// Produtos padrão para garantir que o catálogo nunca fique vazio
+const DEFAULT_PRODUCTS = [
+  { name: 'Notebook Gamer', price: 3599.9, category: 'eletronics', stock: 10 },
+  { name: 'Mouse Gamer', price: 199.9, category: 'eletronics', stock: 25 },
+  { name: 'Teclado Mecânico', price: 349.9, category: 'eletronics', stock: 15 },
+  { name: 'Monitor 24 polegadas', price: 899.9, category: 'eletronics', stock: 8 },
+  { name: 'Cadeira Gamer', price: 799.9, category: 'moveis', stock: 12 }
 ];
 
 async function seed() {
+  // Insert admin user
   let admin = await User.findUserByEmail(ADMIN_EMAIL);
   if (!admin) {
     admin = await User.createUser({ name: 'Administrador', email: ADMIN_EMAIL, password: ADMIN_PASSWORD, role: 'admin' });
@@ -26,6 +25,7 @@ async function seed() {
     console.log('Admin já existe:', admin.email);
   }
 
+  // Insert customer user
   let customer = await User.findUserByEmail(CUSTOMER_EMAIL);
   if (!customer) {
     customer = await User.createUser({ name: 'Cliente Teste', email: CUSTOMER_EMAIL, password: CUSTOMER_PASSWORD, role: 'customer' });
@@ -34,15 +34,21 @@ async function seed() {
     console.log('Cliente já existe:', customer.email);
   }
 
-  for (const p of PRODUCTS) {
-    const existing = await Product.findProductById(p.name); // não usado, apenas insere
-    await Product.createProduct(p);
+  // Insert default products if none exist
+  const existingProducts = await Product.listProducts();
+  if (existingProducts.length === 0) {
+    for (const p of DEFAULT_PRODUCTS) {
+      await Product.createProduct(p);
+    }
+    console.log(`${DEFAULT_PRODUCTS.length} produtos padrão inseridos.`);
+  } else {
+    console.log(`${existingProducts.length} produtos já existentes no banco.`);
   }
-  console.log(`${PRODUCTS.length} produtos inseridos.`);
+
   console.log('Seed concluído.');
 }
 
 seed().catch((err) => {
   console.error('Erro no seed:', err);
-  process.exit(1);
+  // Não sair do processo - permitir que o servidor rode mesmo com erro no seed
 });

@@ -60,7 +60,26 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 
-initSchema().then(() => {
+initSchema().then(async () => {
+  // Seed default products if database is empty
+  const Product = require('./src/models/Product');
+  const existingProducts = await Product.listProducts();
+  if (existingProducts.length === 0) {
+    const DEFAULT_PRODUCTS = [
+      { name: 'Notebook Gamer', price: 3599.9, category: 'eletronics', stock: 10 },
+      { name: 'Mouse Gamer', price: 199.9, category: 'eletronics', stock: 25 },
+      { name: 'Teclado Mecânico', price: 349.9, category: 'eletronics', stock: 15 },
+      { name: 'Monitor 24 polegadas', price: 899.9, category: 'eletronics', stock: 8 },
+      { name: 'Cadeira Gamer', price: 799.9, category: 'moveis', stock: 12 }
+    ];
+    for (const p of DEFAULT_PRODUCTS) {
+      await Product.createProduct(p);
+    }
+    console.log(`${DEFAULT_PRODUCTS.length} produtos padrão inseridos no banco.`);
+  } else {
+    console.log(`${existingProducts.length} produtos já no banco.`);
+  }
+
   app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
   });
