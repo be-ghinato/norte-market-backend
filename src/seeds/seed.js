@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const Product = require('../models/Product');
 
-const ADMIN_EMAIL = 'admin@norte-market.com';
+const ADMIN_EMAIL = 'admin@nortemarket.com';
 const ADMIN_PASSWORD = 'admin123';
 const CUSTOMER_EMAIL = 'cliente@nortemarket.com';
 const CUSTOMER_PASSWORD = 'cliente123';

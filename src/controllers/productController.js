@@ -48,13 +48,15 @@ async function update(req, res) {
 
 async function remove(req, res) {
   try {
+    console.log('DELETE product id:', req.params.id);
     const deleted = await Product.deleteProduct(req.params.id);
-    if (!deleted || deleted.rowCount === 0) {
+    console.log('Deleted result:', deleted);
+    if (!deleted) {
       return res.status(404).json({ message: 'Produto não encontrado.' });
     }
     return res.json({ message: 'Produto removido com sucesso.' });
   } catch (err) {
-    console.error(err);
+    console.error('Delete error:', err);
     return res.status(500).json({ message: 'Erro ao remover produto.' });
   }
 }

@@ -37,7 +37,7 @@ async function updateProduct(id, fields) {
 
 async function deleteProduct(id) {
   const res = await query('DELETE FROM products WHERE id = $1 RETURNING id', [id]);
-  return res.rows[0];
+  return res.rows[0] || null;
 }
 
 module.exports = {

@@ -138,10 +138,12 @@ async function query(text, params = []) {
     const whereMatch = text.match(/where\s+id\s*=\s*\$(\d+)/i);
     const idParam = whereMatch ? params[parseInt(whereMatch[1]) - 1] : null;
 
+    const deletedItem = data[collection].find(r => r.id == idParam);
     const before = data[collection].length;
     data[collection] = data[collection].filter(r => r.id != idParam);
     writeFileStore(data);
-    return { rowCount: before - data[collection].length };
+    const rowCount = before - data[collection].length;
+    return { rows: deletedItem ? [deletedItem] : [], rowCount };
   }
 
   return { rows: [], rowCount: 0 };
